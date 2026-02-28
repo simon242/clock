@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>全螢幕時鐘</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* 背景圖片 */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80') no-repeat center center;
+            background-size: cover;
+            filter: brightness(0.6); /* 稍微調暗背景，讓時間更清晰 */
+            z-index: -1;
+        }
+
+        /* 時間容器 */
+        .clock-container {
+            text-align: center;
+            color: white;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        #time {
+            font-size: 20vw; /* 根據螢幕寬度自動縮放字體 */
+            font-weight: 200;
+            letter-spacing: -2px;
+        }
+
+        #date {
+            font-size: 5vw;
+            font-weight: 400;
+            margin-top: -20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background"></div>
+
+    <div class="clock-container">
+        <div id="time">00:00:00</div>
+        <div id="date">YYYY/MM/DD</div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            
+            // 格式化時間
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('time').textContent = `${h}:${m}:${s}`;
+            
+            // 格式化日期
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const date = now.getDate();
+            const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const dayName = days[now.getDay()];
+            document.getElementById('date').textContent = `${year}年${month}月${date}日 ${dayName}`;
+        }
+
+        // 每秒更新一次
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 防止手機休眠 (選配，需用戶互動過後才可能生效)
+        if ('wakeLock' in navigator) {
+            navigator.wakeLock.request('screen').catch(console.error);
+        }
+    </script>
+</body>
+</html>
