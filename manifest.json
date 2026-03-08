@@ -1,8 +1,8 @@
 {
-  "name": "手機管控系統 MDM V1.0",
-  "short_name": "MDM V1.0",
+  "name": "MDM",
+  "short_name": "MDM",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#6ED144",
-  "theme_color": "#6ED144"
+  "background_color": "#000000",
+  "theme_color": "#000000"
 }
