@@ -16,7 +16,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-image: url('bg1.jpg'); 
+            background-image: url('bg.jpg'); 
             background-size: 100% 100%; 
             background-repeat: no-repeat;
             background-position: center;
@@ -24,16 +24,14 @@
             color: #000;
         }
 
-        /* 中央大時間的遮罩色塊 */
+        /* 中央大時間的區塊 (背景透明) */
         .main-time-container {
             position: absolute;
-            top: 39.5%; 
+            top: 34.5%; /* 若高度有誤差，調整這個百分比 */
             left: 0;
             width: 100%;
             text-align: center;
-            /* 調整為更接近的綠色，並使用微幅的陰影柔化邊緣色差 */
-            background-color: #6bd242; 
-            box-shadow: 0 0 10px 5px #6bd242;
+            background-color: transparent; 
             padding: 5px 0;
         }
 
@@ -41,20 +39,18 @@
             font-size: 11.5vw; 
             font-weight: 700;
             letter-spacing: 1px;
-            /* 確保文字在陰影之上 */
             position: relative; 
             z-index: 2;
         }
 
-        /* 下方上鎖時間的遮罩色塊 */
+        /* 下方上鎖時間的區塊 (背景透明) */
         .lock-time-container {
             position: absolute;
-            top: 82.5%; 
+            top: 82.5%; /* 若高度有誤差，調整這個百分比 */
             left: 0;
             width: 100%;
             text-align: center;
-            background-color: #6bd242; 
-            box-shadow: 0 0 5px 3px #6bd242;
+            background-color: transparent; 
             padding: 2px 0;
         }
 
@@ -78,7 +74,7 @@
     </div>
 
     <script>
-        // --- 1. 設定固定的上鎖時間 (只在網頁載入時執行一次) ---
+        // --- 1. 設定固定的上鎖時間 ---
         const initTime = new Date();
         // 往前推 8 分鐘 23 秒
         const lockTime = new Date(initTime.getTime() - (8 * 60 + 23) * 1000); 
