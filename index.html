@@ -3,95 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>全螢幕時鐘</title>
+    <title>手機管控系統 MDM</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        /* 背景圖片 */
-        .background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80') no-repeat center center;
-            background-size: cover;
-            filter: brightness(0.6); /* 稍微調暗背景，讓時間更清晰 */
-            z-index: -1;
-        }
-
-        /* 時間容器 */
-        .clock-container {
-            text-align: center;
-            color: white;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        #time {
-            font-size: 20vw; /* 根據螢幕寬度自動縮放字體 */
-            font-weight: 200;
-            letter-spacing: -2px;
-        }
-
-        #date {
-            font-size: 5vw;
-            font-weight: 400;
-            margin-top: -20px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="background"></div>
+    <div class="navbar">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="title">手機管控系統 MDM V1.0</div>
+    </div>
 
-    <div class="clock-container">
-        <div id="time">00:00:00</div>
-        <div id="date">YYYY/MM/DD</div>
+    <div class="status-info">
+        <div class="ios-version">iOS: 26.2.1</div>
+        <div class="lock-status">已上鎖，可進入此管制營區</div>
+    </div>
+
+    <div class="main-content">
+        <div class="camp-text">營區</div>
+        <div class="live-time-display" id="live-time">03/08 23:24:02</div>
+        
+        <div class="button-group">
+            <button class="btn btn-lock">
+                <span class="dot-green"></span>
+                上鎖：進入管制模式
+            </button>
+            <button class="btn btn-unlock">
+                <span class="dot-red"></span>
+                解鎖：離開管制模式
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-content">
+        <div class="info-row">上鎖時間：<span id="lock-time">03/08 23:16:39</span></div>
+        <div class="info-row">設定檔：V1.03 (07/24 08:39:34)</div>
+        <div class="warning-text">仿冒 必究</div>
     </div>
 
     <script>
         function updateClock() {
             const now = new Date();
             
-            // 格式化時間
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('time').textContent = `${h}:${m}:${s}`;
-            
-            // 格式化日期
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const date = now.getDate();
-            const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const dayName = days[now.getDay()];
-            document.getElementById('date').textContent = `${year}年${month}月${date}日 ${dayName}`;
+            // 格式化主時間 (MM/DD HH:MM:SS)
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const date = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const liveTimeStr = `${month}/${date} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('live-time').textContent = liveTimeStr;
+
+            // 計算並格式化上鎖時間 (比主時間早 7 分鐘 23 秒)
+            const lockTime = new Date(now.getTime() - (7 * 60 + 23) * 1000);
+            const lockMonth = String(lockTime.getMonth() + 1).padStart(2, '0');
+            const lockDate = String(lockTime.getDate()).padStart(2, '0');
+            const lockHours = String(lockTime.getHours()).padStart(2, '0');
+            const lockMinutes = String(lockTime.getMinutes()).padStart(2, '0');
+            const lockSeconds = String(lockTime.getSeconds()).padStart(2, '0');
+            const lockTimeStr = `${lockMonth}/${lockDate} ${lockHours}:${lockMinutes}:${lockSeconds}`;
+            document.getElementById('lock-time').textContent = lockTimeStr;
         }
 
         // 每秒更新一次
         setInterval(updateClock, 1000);
-        updateClock();
-
-        // 防止手機休眠 (選配，需用戶互動過後才可能生效)
-        if ('wakeLock' in navigator) {
-            navigator.wakeLock.request('screen').catch(console.error);
-        }
+        updateClock(); // 初始呼叫以立即顯示時間
     </script>
 </body>
 </html>
