@@ -24,7 +24,7 @@
             color: #000;
         }
 
-        /* 中央大時間的區塊 (背景透明) */
+        /* 中央大時間的區塊 */
         .main-time-container {
             position: absolute;
             top: 33.5%; 
@@ -38,14 +38,15 @@
         #live-time {
             font-size: 11.5vw; 
             font-weight: 700;
-            letter-spacing: -1px; /* 稍微拉緊字與字之間的距離 */
-            transform: scale(0.75,0.75); /* 將文字左右壓縮成原本的 85% */
-            display: inline-block; /* 必須設定為 inline-block，transform 才會生效 */
+            letter-spacing: -1px; 
+            /* 左右(X)縮小為 85%，上下(Y)縮小為 90% */
+            transform: scale(0.7, 0.7); 
+            display: inline-block; 
             position: relative; 
             z-index: 2;
         }
 
-        /* 下方上鎖時間的區塊 (背景透明) */
+        /* 下方上鎖時間的區塊 */
         .lock-time-container {
             position: absolute;
             top: 82.5%; 
@@ -72,11 +73,24 @@
     </div>
 
     <div class="lock-time-container">
-        <div id="lock-time">上鎖時間：03/08 23:16:39</div>
+        <div id="lock-time">上鎖時間：00/00 00:00:00</div>
     </div>
 
     <script>
-        // --- 設定即時跳動的當前時間 ---
+        // --- 1. 設定固定的上鎖時間 (開啟網頁時動態計算一次) ---
+        const initTime = new Date();
+        // 往前推 8 分鐘 23 秒
+        const lockTime = new Date(initTime.getTime() - (8 * 60 + 23) * 1000); 
+        
+        const lMonth = String(lockTime.getMonth() + 1).padStart(2, '0');
+        const lDate = String(lockTime.getDate()).padStart(2, '0');
+        const lHours = String(lockTime.getHours()).padStart(2, '0');
+        const lMinutes = String(lockTime.getMinutes()).padStart(2, '0');
+        const lSeconds = String(lockTime.getSeconds()).padStart(2, '0');
+        
+        document.getElementById('lock-time').textContent = `上鎖時間：${lMonth}/${lDate} ${lHours}:${lMinutes}:${lSeconds}`;
+
+        // --- 2. 設定即時跳動的當前時間 ---
         function updateClock() {
             const now = new Date();
             const month = String(now.getMonth() + 1).padStart(2, '0');
