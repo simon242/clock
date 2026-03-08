@@ -8,44 +8,67 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            /* 將你的圖片設定為背景，強制填滿螢幕 */
+            background-image: url('bg.jpg'); 
+            background-size: 100% 100%; 
+            background-repeat: no-repeat;
+            background-position: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #000;
+        }
+
+        /* 覆蓋中央大時間的區塊 */
+        .main-time-container {
+            position: absolute;
+            top: 39.5%; /* 垂直位置，若有偏移請微調這裡的 % 數 */
+            left: 0;
+            width: 100%;
+            text-align: center;
+            /* 使用與圖片相同的綠色來蓋住原圖上的文字 */
+            background-color: #72d54a; 
+            padding: 5px 0;
+        }
+
+        #live-time {
+            font-size: 11.5vw; /* 字體大小 */
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* 覆蓋下方上鎖時間的區塊 */
+        .lock-time-container {
+            position: absolute;
+            top: 82.5%; /* 垂直位置，若有偏移請微調這裡的 % 數 */
+            left: 0;
+            width: 100%;
+            text-align: center;
+            background-color: #72d54a; 
+            padding: 2px 0;
+        }
+
+        #lock-time {
+            font-size: 5vw;
+            font-weight: 400;
+            color: rgba(0,0,0,0.85);
+        }
+    </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <div class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <div class="title">手機管控系統 MDM V1.0</div>
+    <div class="main-time-container">
+        <div id="live-time">00/00 00:00:00</div>
     </div>
 
-    <div class="status-info">
-        <div class="ios-version">iOS: 26.2.1</div>
-        <div class="lock-status">已上鎖，可進入此管制營區</div>
-    </div>
-
-    <div class="main-content">
-        <div class="camp-text">營區</div>
-        <div class="live-time-display" id="live-time">03/08 23:24:02</div>
-        
-        <div class="button-group">
-            <button class="btn btn-lock">
-                <span class="dot-green"></span>
-                上鎖：進入管制模式
-            </button>
-            <button class="btn btn-unlock">
-                <span class="dot-red"></span>
-                解鎖：離開管制模式
-            </button>
-        </div>
-    </div>
-
-    <div class="footer-content">
-        <div class="info-row">上鎖時間：<span id="lock-time">03/08 23:16:39</span></div>
-        <div class="info-row">設定檔：V1.03 (07/24 08:39:34)</div>
-        <div class="warning-text">仿冒 必究</div>
+    <div class="lock-time-container">
+        <div id="lock-time">上鎖時間：00/00 00:00:00</div>
     </div>
 
     <script>
@@ -58,23 +81,22 @@
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-            const liveTimeStr = `${month}/${date} ${hours}:${minutes}:${seconds}`;
-            document.getElementById('live-time').textContent = liveTimeStr;
+            
+            document.getElementById('live-time').textContent = `${month}/${date} ${hours}:${minutes}:${seconds}`;
 
-            // 計算並格式化上鎖時間 (比主時間早 7 分鐘 23 秒)
-            const lockTime = new Date(now.getTime() - (7 * 60 + 23) * 1000);
-            const lockMonth = String(lockTime.getMonth() + 1).padStart(2, '0');
-            const lockDate = String(lockTime.getDate()).padStart(2, '0');
-            const lockHours = String(lockTime.getHours()).padStart(2, '0');
-            const lockMinutes = String(lockTime.getMinutes()).padStart(2, '0');
-            const lockSeconds = String(lockTime.getSeconds()).padStart(2, '0');
-            const lockTimeStr = `${lockMonth}/${lockDate} ${lockHours}:${lockMinutes}:${lockSeconds}`;
-            document.getElementById('lock-time').textContent = lockTimeStr;
+            // 產生一個固定的「上鎖時間」，這裡設定為比現在早 8 分鐘 23 秒
+            const lockTime = new Date(now.getTime() - (8 * 60 + 23) * 1000);
+            const lMonth = String(lockTime.getMonth() + 1).padStart(2, '0');
+            const lDate = String(lockTime.getDate()).padStart(2, '0');
+            const lHours = String(lockTime.getHours()).padStart(2, '0');
+            const lMinutes = String(lockTime.getMinutes()).padStart(2, '0');
+            const lSeconds = String(lockTime.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('lock-time').textContent = `上鎖時間：${lMonth}/${lDate} ${lHours}:${lMinutes}:${lSeconds}`;
         }
 
-        // 每秒更新一次
         setInterval(updateClock, 1000);
-        updateClock(); // 初始呼叫以立即顯示時間
+        updateClock(); 
     </script>
 </body>
 </html>
